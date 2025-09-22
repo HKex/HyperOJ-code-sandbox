@@ -1,6 +1,6 @@
 package com.hkex.hyperojcodesandbox.controller;
 
-import com.hkex.hyperojcodesandbox.JavaNativeCodeSandBoxImpl;
+import com.hkex.hyperojcodesandbox.JavaDockerCodeSandBoxTemplateImpl;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeRequest;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ public class MainController {
     private static final String AUTH_REQUEST_SECRET = "itsmygo";
 
     @Resource
-    private JavaNativeCodeSandBoxImpl javaNativeCodeSandBox;
+    private JavaDockerCodeSandBoxTemplateImpl javaCodeSandBox;
 
     @GetMapping("/health")
     public String health() {
@@ -43,6 +43,6 @@ public class MainController {
         if(executeCodeRequest == null){
             throw new RuntimeException("参数为空");
         }
-        return javaNativeCodeSandBox.executeCode(executeCodeRequest);
+        return javaCodeSandBox.executeCode(executeCodeRequest);
     }
 }

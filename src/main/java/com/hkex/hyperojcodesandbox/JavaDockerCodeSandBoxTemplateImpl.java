@@ -2,7 +2,6 @@ package com.hkex.hyperojcodesandbox;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.*;
@@ -12,7 +11,8 @@ import com.github.dockerjava.core.command.ExecStartResultCallback;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeRequest;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeResponse;
 import com.hkex.hyperojcodesandbox.model.ExecuteMessage;
-import com.hkex.hyperojcodesandbox.model.JudgeInfo;
+import com.hkex.hyperojcodesandbox.old.JavaOldDockerCodeSandBoxImpl;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import java.io.Closeable;
@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * java沙箱Docker实现
  */
+@Component
 public class JavaDockerCodeSandBoxTemplateImpl extends JavaCodeSandBoxTemplate {
     public static final boolean IMAGE_EXIST = true;
     private static final long TIME_OUT = 5000L;
@@ -155,7 +156,7 @@ public class JavaDockerCodeSandBoxTemplateImpl extends JavaCodeSandBoxTemplate {
 
             // 获取占用的内存
             StatsCmd statsCmd = dockerClient.statsCmd(containerId);
-            ResultCallback<Statistics> statisticsResultCallback = statsCmd.exec(new ResultCallback<Statistics>() {
+            ResultCallback<Statistics> statisticsResultCallback = new ResultCallback<Statistics>() {
 
                 @Override
                 public void onNext(Statistics statistics) {
@@ -182,7 +183,7 @@ public class JavaDockerCodeSandBoxTemplateImpl extends JavaCodeSandBoxTemplate {
                 public void onComplete() {
 
                 }
-            });
+            };
             statsCmd.exec(statisticsResultCallback);
 
             try {
@@ -192,12 +193,16 @@ public class JavaDockerCodeSandBoxTemplateImpl extends JavaCodeSandBoxTemplate {
                         .exec(execStartResultCallback)
                         .awaitCompletion(TIME_OUT, TimeUnit.MILLISECONDS);
                 stopWatch.stop();
-                statsCmd.close();
                 time = stopWatch.getLastTaskTimeMillis();
                 MaxTime = Math.max(time, MaxTime);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e ) {
                 System.out.println("执行异常");
                 throw new RuntimeException(e);
+            }finally {
+                statsCmd.close();
+                //停止容器
+                dockerClient.stopContainerCmd(containerId).exec();
+                dockerClient.removeContainerCmd(containerId).withForce(true).exec();
             }
             executeMessage.setErrorMessage(errorMessage[0]);
             executeMessage.setMessage(message[0]);
@@ -208,28 +213,23 @@ public class JavaDockerCodeSandBoxTemplateImpl extends JavaCodeSandBoxTemplate {
         }
 
         //整理输出结果
-        ExecuteCodeResponse executeCodeResponse = new ExecuteCodeResponse();
-        List<String> outputList = new ArrayList<>();
-        for (ExecuteMessage executeMessage : executeMessageList) {
-            String errorMessage = executeMessage.getErrorMessage();
-            if (StrUtil.isNotBlank(errorMessage)) {
-                executeCodeResponse.setMessage(errorMessage);
-                //代码有错误
-                executeCodeResponse.setStatus(3);
-                break;
-            }
-            outputList.add(executeMessage.getMessage());
-        }
+//        ExecuteCodeResponse executeCodeResponse = new ExecuteCodeResponse();
+//        List<String> outputList = new ArrayList<>();
+//        for (ExecuteMessage executeMessage : executeMessageList) {
+//            String errorMessage = executeMessage.getErrorMessage();
+//            if (StrUtil.isNotBlank(errorMessage)) {
+//                executeCodeResponse.setMessage(errorMessage);
+//                //代码有错误
+//                executeCodeResponse.setStatus(3);
+//                break;
+//            }
+//            outputList.add(executeMessage.getMessage());
+//        }
+//
+//        if(outputList.size() == executeMessageList.size()){
+//            executeCodeResponse.setStatus(1);
+//        }
 
-        if(outputList.size() == executeMessageList.size()){
-            executeCodeResponse.setStatus(1);
-        }
-
-        executeCodeResponse.setOutputList(outputList);
-        JudgeInfo judgeInfo = new JudgeInfo();
-        judgeInfo.setTime(MaxTime);
-//        judgeInfo.setMemory();
-        executeCodeResponse.setJudgeInfo(judgeInfo);
-        return super.runCode(inputList, userCodeFile);
+        return executeMessageList;
     }
 }

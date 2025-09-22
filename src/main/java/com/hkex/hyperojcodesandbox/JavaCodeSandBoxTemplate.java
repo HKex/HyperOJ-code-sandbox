@@ -77,7 +77,7 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox{
     public ExecuteMessage compCode(File userCodeFile){
         //编译代码
         //也可以传入userCodePath(不建议)
-        String compileCmd = String.format("javac -encoding utf-8 %s", userCodeFile.getAbsolutePath());
+        String compileCmd = String.format("javac -source 8 -target 8 -encoding utf-8 %s", userCodeFile.getAbsolutePath());
         try {
             Process Compileprocess = Runtime.getRuntime().exec(compileCmd);
             ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(Compileprocess, "编译",TIME_OUT);
