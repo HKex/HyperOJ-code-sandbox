@@ -1,3 +1,11 @@
 server:
   port: 8090
 
+spring:
+  rabbitmq:
+    host: localhost  # MQ主机地址
+    port: 5672       # 端口
+    username: developer  # 用户名
+    password: devpassword  # 密码
+    virtual-host: /dev  # 虚拟主机
+
