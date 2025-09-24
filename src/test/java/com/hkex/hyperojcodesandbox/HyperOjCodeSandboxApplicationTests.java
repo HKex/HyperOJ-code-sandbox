@@ -30,8 +30,7 @@ class HyperOjCodeSandboxApplicationTests {
     }
 
     @Test
-    void testCode(String[] args) {
-        CodeSandBox codeSandBox = new JavaOldDockerCodeSandBoxImpl();
+    void testCode() {
         ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
                 .inputList(Arrays.asList("1 2", "3 4"))
                 .code("")

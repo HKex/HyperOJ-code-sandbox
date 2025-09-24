@@ -87,6 +87,7 @@ public class JavaDockerCodeSandBoxTemplateImpl extends JavaCodeSandBoxTemplate {
             return null;
         }finally {
             if (containerId != null) {
+                log.info("准备清理容器{}", containerId);
                 cleanupContainer(containerId);
             }
         }
@@ -279,7 +280,7 @@ public class JavaDockerCodeSandBoxTemplateImpl extends JavaCodeSandBoxTemplate {
             pullImageCmd
                     .exec(pullImageResultCallback)
                     .awaitCompletion();
-            log.info("下载完成");log.info("下载完成");
+            log.info("下载完成");
         }catch (InterruptedException e) {
             log.error("拉取镜像异常");
             throw new RuntimeException(e);

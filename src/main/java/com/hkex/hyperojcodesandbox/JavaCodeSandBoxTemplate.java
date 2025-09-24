@@ -10,7 +10,6 @@ import com.hkex.hyperojcodesandbox.utils.ProcessUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +69,6 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox{
         }finally {
             if (file != null ) {
                 boolean b = clearCodeFile(file);
-                log.error("代码清理异常, userCodeFilePath:{}", file.getAbsolutePath());
                 if (!b) {
                     log.warn("临时文件清理失败，路径：{}",  file.getParentFile().getAbsolutePath());
                 }
@@ -130,23 +128,23 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox{
      * @param userCodeFile 用户代码文件
      * @return 运行结果
      */
-    public List<ExecuteMessage> runCode(List<String> inputList, File userCodeFile){
+    public abstract List<ExecuteMessage> runCode(List<String> inputList, File userCodeFile);
         //执行代码（小心使用Scanner的程序）
 
-        List<ExecuteMessage> executeMessageList = new ArrayList<>();
-        for (String input : inputList) {
-            String runCmd = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeFile.getParentFile().getAbsolutePath(), input);
-            try {
-                Process runProcess = Runtime.getRuntime().exec(runCmd);
-                ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(runProcess, "运行",TIME_OUT);
-                executeMessageList.add(executeMessage);
-                System.out.println(executeMessage);
-            } catch (IOException e) {
-                throw new RuntimeException("运行异常",e);
-            }
-        }
-        return executeMessageList;
-    }
+//        List<ExecuteMessage> executeMessageList = new ArrayList<>();
+//        for (String input : inputList) {
+//            String runCmd = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeFile.getParentFile().getAbsolutePath(), input);
+//            try {
+//                Process runProcess = Runtime.getRuntime().exec(runCmd);
+//                ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(runProcess, "运行",TIME_OUT);
+//                executeMessageList.add(executeMessage);
+//                System.out.println(executeMessage);
+//            } catch (IOException e) {
+//                throw new RuntimeException("运行异常",e);
+//            }
+//        }
+//        return executeMessageList;
+
 
     /**
      * 整理输出结果
@@ -202,7 +200,7 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox{
         //文件清理
         if (userCodeFile.getParentFile() != null) {
             boolean del = FileUtil.del(userCodeFile.getParentFile().getAbsolutePath());
-            System.out.println("删除" + (del ? "成功" : "失败"));
+            log.info("删除" + (del ? "成功" : "失败"));
             return del;
         }
         return true;
