@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class MQUtils {
+
+    private static final String RESULT_KEY = "code.execute.completed";
+
     private final RabbitTemplate rabbitTemplate;
 
     public MQUtils(RabbitTemplate rabbitTemplate) {
@@ -24,7 +27,7 @@ public class MQUtils {
      */
     public void sendExecuteResult(ExecuteCodeResponse response) {
         try {
-            rabbitTemplate.convertAndSend(RabbitMQConfig.CODE_EXECUTE_RESULT_QUEUE, response);
+            rabbitTemplate.convertAndSend(RESULT_KEY, response);
             log.info("成功发送代码执行请求，请求内容：{}", response);
         }catch (Exception e){
             log.error("发送消息失败，请求内容：{}，错误信息：{}",

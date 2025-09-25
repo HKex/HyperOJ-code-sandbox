@@ -11,8 +11,8 @@ public class RabbitMQConfig {
     //TODO 加入死信队列
 
     // 代码执行请求队列名称
-    public static final String CODE_EXECUTE_QUEUE = "code.execute.incoming";
-    public static final String CODE_EXECUTE_RESULT_QUEUE = "code.execute.outcome";
+    public static final String CODE_EXECUTE_QUEUE = "code.execute.producer";
+    public static final String CODE_EXECUTE_RESULT_QUEUE = "code.execute.consumer";
 
     /**
      * 代码执行队列
