@@ -1,6 +1,6 @@
 package com.hkex.hyperojcodesandbox.listener;
 
-import com.hkex.hyperojcodesandbox.JavaDockerCodeSandBoxTemplateImpl;
+import com.hkex.hyperojcodesandbox.CodeSandBoxes.JavaDockerCodeSandBox;
 import com.hkex.hyperojcodesandbox.config.RabbitMQConfig;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeRequest;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeResponse;
@@ -15,16 +15,20 @@ import javax.annotation.Resource;
 @Slf4j
 public class CodeExecuteMQListener {
     @Resource
-    private JavaDockerCodeSandBoxTemplateImpl codeSandBox;
+    private JavaDockerCodeSandBox codeSandBox;
 
     @Resource
     private MQUtils mqUtils;
 
 
+    /**
+     * 监听指定队列请求，执行请求后把结果发到队列中
+     * @param request 代码执行请求
+     */
     @RabbitListener(queues = RabbitMQConfig.CODE_EXECUTE_QUEUE)
     public void handleCodeExecuteRequest(ExecuteCodeRequest request) {
         if (request == null) {
-            log.error("MQ接收的代码执行请求为空");
+            log.error("MQ传来的代码执行请求为空");
             return;
         }
         log.info("从MQ接收代码执行请求：{}", request);

@@ -1,6 +1,6 @@
 package com.hkex.hyperojcodesandbox.controller;
 
-import com.hkex.hyperojcodesandbox.JavaDockerCodeSandBoxTemplateImpl;
+import com.hkex.hyperojcodesandbox.CodeSandBoxes.JavaDockerCodeSandBox;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeRequest;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ public class MainController {
     private static final String AUTH_REQUEST_SECRET = "itsmygo";
 
     @Resource
-    private JavaDockerCodeSandBoxTemplateImpl javaCodeSandBox;
+    private JavaDockerCodeSandBox javaCodeSandBox;
 
     @GetMapping("/health")
     public String health() {

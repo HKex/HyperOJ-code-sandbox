@@ -1,9 +1,10 @@
 package com.hkex.hyperojcodesandbox;
 
 import cn.hutool.core.io.resource.ResourceUtil;
+import com.hkex.hyperojcodesandbox.CodeSandBoxes.CodeSandBox;
+import com.hkex.hyperojcodesandbox.CodeSandBoxes.JavaDockerCodeSandBox;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeRequest;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeResponse;
-import com.hkex.hyperojcodesandbox.old.JavaOldDockerCodeSandBoxImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,7 +16,7 @@ import java.util.Arrays;
 class HyperOjCodeSandboxApplicationTests {
 
     @Resource
-    private JavaDockerCodeSandBoxTemplateImpl codeSandBox;
+    private JavaDockerCodeSandBox codeSandBox;
 
 
 

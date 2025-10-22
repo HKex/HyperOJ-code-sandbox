@@ -4,7 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.dfa.WordTree;
-import com.hkex.hyperojcodesandbox.CodeSandBox;
+import com.hkex.hyperojcodesandbox.CodeSandBoxes.CodeSandBox;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeRequest;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeResponse;
 import com.hkex.hyperojcodesandbox.model.ExecuteMessage;

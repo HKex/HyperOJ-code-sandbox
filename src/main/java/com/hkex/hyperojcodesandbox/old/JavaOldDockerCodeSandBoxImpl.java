@@ -10,7 +10,7 @@ import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
-import com.hkex.hyperojcodesandbox.CodeSandBox;
+import com.hkex.hyperojcodesandbox.CodeSandBoxes.CodeSandBox;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeRequest;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeResponse;
 import com.hkex.hyperojcodesandbox.model.ExecuteMessage;
