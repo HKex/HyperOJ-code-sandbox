@@ -22,6 +22,9 @@ public class ExecuteCodeResponse {
 
     /**
      * 状态
+     * 1-成功
+     * 2-代码沙箱错误
+     * 3-代码有错误
      */
     private Integer status;
 

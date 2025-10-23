@@ -3,6 +3,7 @@ package com.hkex.hyperojcodesandbox.CodeSandBoxes;
 import cn.hutool.core.io.FileUtil;
 import com.hkex.hyperojcodesandbox.model.ExecuteCodeResponse;
 import com.hkex.hyperojcodesandbox.model.JudgeInfo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 import static com.hkex.hyperojcodesandbox.constant.CodeSandBoxConstant.GLOBAL_CODE_FILE_PATH;
 
+@Slf4j
 public abstract class AbstractCodeSandBox implements CodeSandBox {
 
     protected abstract String getCodeFileName();
@@ -51,6 +53,7 @@ public abstract class AbstractCodeSandBox implements CodeSandBox {
         executeCodeResponse.setStatus(2);
         executeCodeResponse.setOutputList(new ArrayList<>());
         executeCodeResponse.setMessage(e.getMessage());
+        log.warn("代码沙箱错误：" + e.getMessage());
         executeCodeResponse.setJudgeInfo(new JudgeInfo());
         return executeCodeResponse;
     }

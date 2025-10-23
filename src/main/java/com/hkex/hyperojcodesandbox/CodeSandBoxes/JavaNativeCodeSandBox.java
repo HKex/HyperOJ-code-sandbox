@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.hkex.hyperojcodesandbox.constant.CodeSandBoxConstant.*;
@@ -51,6 +52,10 @@ public class JavaNativeCodeSandBox extends AbstractNativeCodeSandBox implements 
 
     @Override
     public List<ExecuteMessage> runCode(List<String> inputList, File userCodeFile) {
+        if (inputList == null) {
+            return Collections.emptyList(); // 或抛异常
+        }
+        log.info("输入参数：{}", inputList);
         List<ExecuteMessage> executeMessageList = new ArrayList<>();
         for (String input : inputList) {
             String runCmd = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeFile.getParentFile().getAbsolutePath(), input);
@@ -58,7 +63,7 @@ public class JavaNativeCodeSandBox extends AbstractNativeCodeSandBox implements 
                 Process runProcess = Runtime.getRuntime().exec(runCmd);
                 ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(runProcess, "运行",TIME_OUT);
                 executeMessageList.add(executeMessage);
-                System.out.println(executeMessage);
+                log.info(executeMessage.toString());
             } catch (IOException e) {
                 throw new RuntimeException("运行异常",e);
             }
@@ -79,6 +84,7 @@ public class JavaNativeCodeSandBox extends AbstractNativeCodeSandBox implements 
                 executeCodeResponse.setMessage(executeMessage.getErrorMessage());
                 //代码有错误
                 executeCodeResponse.setStatus(3);
+                log.warn("输出信息有错误，错误信息: {}", executeMessage.getErrorMessage());
                 break;
             }
             outputList.add(executeMessage.getMessage());

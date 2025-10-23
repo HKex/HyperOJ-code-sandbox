@@ -74,6 +74,7 @@ public abstract class AbstractDockerCodeSandBox extends AbstractCodeSandBox impl
             compileInContainer(containerId);
 
             //开始执行代码
+            String[] cmd = {"java", "-cp", "/code", "Main"};
             List<ExecuteMessage> executeMessageList = executeInputs(containerId, inputList);
 
             //整理输出结果
@@ -296,6 +297,7 @@ public abstract class AbstractDockerCodeSandBox extends AbstractCodeSandBox impl
                     .awaitCompletion(TIME_OUT, TimeUnit.MILLISECONDS);
             }
             long endTime = System.currentTimeMillis();
+            message.setExitValue(0);
             message.setTime(endTime - startTime);
             message.setMessage(output.toString().trim());
             message.setErrorMessage(error.toString().trim());
@@ -315,10 +317,12 @@ public abstract class AbstractDockerCodeSandBox extends AbstractCodeSandBox impl
             }
         } catch (InterruptedException e) {
             message.setErrorMessage("命令执行被中断：" + e.getMessage());
+            message.setExitValue(-1);
             log.error("容器 {} 命令执行中断", containerId, e);
         } catch (Exception e) {
             message.setErrorMessage("命令执行异常：" + e.getMessage());
             log.error("容器 {} 命令执行失败", containerId, e);
+            message.setExitValue(-1);
         }
 
         return message;

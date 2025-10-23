@@ -2,6 +2,7 @@ package com.hkex.hyperojcodesandbox.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.hkex.hyperojcodesandbox.model.ExecuteMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StopWatch;
 
 import java.io.*;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 进程工具类
  */
+@Slf4j
 public class ProcessUtils {
 
     /**
@@ -47,7 +49,7 @@ public class ProcessUtils {
                     executeMessage.setMessage(compileOutputStringBuilder.toString());
                 } else {
                     // 异常退出
-                    System.out.println(opName + "失败，错误码： " + exitValue);
+                    log.error("{}失败，错误码：{} ",opName, exitValue);
                     // 分批获取进程的正常输出
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
                     StringBuilder compileOutputStringBuilder = new StringBuilder();
@@ -73,14 +75,14 @@ public class ProcessUtils {
                 }
             }else {
                 //超时
-                System.out.println("程序超时");
+                log.error("程序超时");
                 runProcess.destroyForcibly();
 
                 exitValue = runProcess.waitFor();
                 executeMessage.setExitValue(exitValue);
 
                 // 异常退出
-                System.out.println(opName + "失败，错误码： " + exitValue);
+                log.error(opName + "失败，错误码： " + exitValue);
                 // 分批获取进程的正常输出
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
                 StringBuilder compileOutputStringBuilder = new StringBuilder();

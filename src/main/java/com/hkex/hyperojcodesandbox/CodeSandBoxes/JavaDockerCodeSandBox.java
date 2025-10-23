@@ -54,21 +54,33 @@ public class JavaDockerCodeSandBox extends AbstractDockerCodeSandBox {
     protected List<ExecuteMessage> executeInputs(String containerId, List<String> inputList) {
         List<ExecuteMessage> results = new ArrayList<>();
         try {
-            for (int i = 0; i < inputList.size(); i++) {
-                String input = inputList.get(i);
-                log.debug("执行第{}个输入，容器ID: {}, 输入内容: {}", i + 1, containerId, input);
-                
-                // 使用标准输入而不是命令行参数
+            if(inputList == null || inputList.isEmpty()){
                 String[] cmd = {"java", "-cp", "/code", "Main"};
-                ExecuteMessage message = super.executeCommandWithInput(containerId, cmd, input);
-                
+                log.info("输入为空，容器ID: {}",containerId);
+                ExecuteMessage message = super.executeCommandWithInput(containerId, cmd, "");
                 if (message.getExitValue() != 0) {
-                    log.warn("第{}个输入执行失败，容器ID: {}, 错误信息: {}", i + 1, containerId, message.getErrorMessage());
+                    log.warn("输入执行失败，容器ID: {}, 错误信息: {}", containerId, message.getErrorMessage());
                 }
-                
+
                 results.add(message);
             }
-            log.info("所有输入执行完成，容器ID: {}, 共执行{}个输入", containerId, inputList.size());
+            else {
+                for (int i = 0; i < inputList.size(); i++) {
+                    String input = inputList.get(i);
+                    log.debug("执行第{}个输入，容器ID: {}, 输入内容: {}", i + 1, containerId, input);
+
+                    // 使用标准输入而不是命令行参数
+                    String[] cmd = {"java", "-cp", "/code", "Main"};
+                    ExecuteMessage message = super.executeCommandWithInput(containerId, cmd, input);
+
+                    if (message.getExitValue() != 0) {
+                        log.warn("第{}个输入执行失败，容器ID: {}, 错误信息: {}", i + 1, containerId, message.getErrorMessage());
+                    }
+
+                    results.add(message);
+                }
+            }
+            log.info("所有输入执行完成，容器ID: {}", containerId);
         } catch (Exception e) {
             log.error("执行输入过程中发生异常，容器ID: {}", containerId, e);
             // 如果发生异常，创建一个错误消息
@@ -91,6 +103,7 @@ public class JavaDockerCodeSandBox extends AbstractDockerCodeSandBox {
         for (ExecuteMessage executeMessage : executeMessageList) {
             if (StrUtil.isNotBlank(executeMessage.getErrorMessage())) {
                 executeCodeResponse.setMessage(executeMessage.getErrorMessage());
+                log.warn("输出信息有错误，错误信息: {}", executeMessage.getErrorMessage());
                 //代码有错误
                 executeCodeResponse.setStatus(3);
                 break;
